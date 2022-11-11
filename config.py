@@ -58,8 +58,8 @@ class KeyboardsCurrencyIDRBot(object):
 
 class KeyboardsCurrencyUSDBot(object):
     def __init__(self):
-        self.btn_btc = KeyboardButton(CURRENCY_FROM_USD.BTC)
-        self.btn_eth = KeyboardButton(CURRENCY_FROM_USD.ETH)
+        self.btn_btc = KeyboardButton(CURRENCY_FROM_USD.BTC[0])
+        self.btn_eth = KeyboardButton(CURRENCY_FROM_USD.ETH[0])
         self.btn = ReplyKeyboardMarkup(
             resize_keyboard=True
         ).row(self.btn_btc, self.btn_eth)
