@@ -11,6 +11,14 @@ from config import TELEGRAM_API_TOKEN, COINMARKETCAP_API_TOKEN, \
     BUTTON, MESSAGE, URL, KeyboardsBot, KeyboardsCurrencyIDRBot, CURRENCY_FROM_IDR,\
     CURRENCY_FROM_USD, KeyboardsCurrencyUSDBot
 
+logging.basicConfig(level=logging.INFO)
+
+bot = Bot(token=TELEGRAM_API_TOKEN)
+dp = Dispatcher(bot)
+kb = KeyboardsBot()
+kcb_idr = KeyboardsCurrencyIDRBot()
+kcb_usd = KeyboardsCurrencyUSDBot()
+
 
 async def getInfo(from_c, to_c):  # Function to get the info
 
@@ -26,24 +34,17 @@ async def getInfo(from_c, to_c):  # Function to get the info
 
     session = Session()
     session.headers.update(headers)
+    try:
+        response = session.get(url, params=parameters)
 
-    response = session.get(url, params=parameters)
+        info = json.loads(response.text)
 
-    info = json.loads(response.text)
-
-    # logging.info(info['data']['1']['quote'])
-    logging.info(info['data'])
-    return info['data']
-
-
-logging.basicConfig(level=logging.INFO)
-
-bot = Bot(token=TELEGRAM_API_TOKEN)
-dp = Dispatcher(bot)
-kb = KeyboardsBot()
-kcb_idr = KeyboardsCurrencyIDRBot()
-kcb_usd = KeyboardsCurrencyUSDBot()
-
+        # logging.info(info['data']['1']['quote'])
+        logging.info(info['data'])
+        return info['data']
+    except Exception:
+        logging.info("Error on http request get into coin marketcap")
+        return None
 
 @dp.message_handler(commands=['start'])
 async def process_start_command(message: types.Message):
@@ -59,34 +60,47 @@ async def echo_message(msg: types.Message):
     elif msg.text in BUTTON.IDR:
         await msg.reply("Alright, you want to fetch into IDR from which currency?",
                         reply_markup=kcb_idr.btn, parse_mode=ParseMode.MARKDOWN)
-    elif msg.text == BUTTON.USD:
+    elif msg.text in BUTTON.USD:
         await msg.reply("Alright, you want to fetch into USD from which currency?",
                         reply_markup=kcb_usd.btn, parse_mode=ParseMode.MARKDOWN)
-    elif msg.text == CURRENCY_FROM_IDR.BTC:
+    elif msg.text in CURRENCY_FROM_IDR.BTC:
         mes = await getInfo(from_c="bitcoin", to_c="IDR")
-        idr_price = math.ceil(mes['1']['quote']['IDR']['price'])
-        message = "1 Bitcoin is equal to RP."+str(idr_price)
-        await msg.reply(message)
-        await msg.reply("is there anything you want to do?")
-    elif msg.text == CURRENCY_FROM_IDR.ETH:
+        if mes:
+            idr_price = math.ceil(mes['1']['quote']['IDR']['price'])
+            message = "1 Bitcoin is equal to RP."+str(idr_price)
+            await msg.reply(message)
+            await msg.reply("is there anything you want to do?")
+        else:
+            await msg.reply("bot can't connect to coinmarketcap, please retry in a few minutes")
+    elif msg.text in CURRENCY_FROM_IDR.ETH:
         mes = await getInfo(from_c="ethereum", to_c="IDR")
-        idr_price = math.ceil(mes['1027']['quote']['IDR']['price'])
-        message = "1 Ethereum is equal to RP."+str(idr_price)
-        await msg.reply(message)
-        await msg.reply("is there anything you want to do?")
-    elif msg.text == CURRENCY_FROM_USD.BTC:
+        if mes:
+            idr_price = math.ceil(mes['1027']['quote']['IDR']['price'])
+            message = "1 Ethereum is equal to RP."+str(idr_price)
+            await msg.reply(message)
+            await msg.reply("is there anything you want to do?")
+        else:
+            await msg.reply("bot can't connect to coinmarketcap, please retry in a few minutes")
+    elif msg.text in CURRENCY_FROM_USD.BTC:
         mes = await getInfo(from_c="bitcoin", to_c="USD")
-        idr_price = math.ceil(mes['1']['quote']['USD']['price'])
-        message = "1 Bitcoin is equal to $" + str(idr_price)
-        await msg.reply(message)
-        await msg.reply("is there anything you want to do?")
-    elif msg.text == CURRENCY_FROM_USD.ETH:
+        if mes:
+            idr_price = math.ceil(mes['1']['quote']['USD']['price'])
+            message = "1 Bitcoin is equal to $" + str(idr_price)
+            await msg.reply(message)
+            await msg.reply("is there anything you want to do?")
+        else:
+            await msg.reply("bot can't connect to coinmarketcap, please retry in a few minutes")
+    elif msg.text in CURRENCY_FROM_USD.ETH:
         mes = await getInfo(from_c="ethereum", to_c="USD")
-        idr_price = math.ceil(mes['1027']['quote']['USD']['price'])
-        message = "1 Ethereum is equal to $" + str(idr_price)
-        await msg.reply(message)
-        await msg.reply("is there anything you want to do?")
-
+        if mes:
+            idr_price = math.ceil(mes['1027']['quote']['USD']['price'])
+            message = "1 Ethereum is equal to $" + str(idr_price)
+            await msg.reply(message)
+            await msg.reply("is there anything you want to do?")
+        else:
+            await msg.reply("bot can't connect to coinmarketcap, please retry in a few minutes")
+    else:
+        await msg.reply("Sorry Bot still learning from the input, not understand your word/sentences.")
 
 if __name__ == '__main__':
     executor.start_polling(dp)

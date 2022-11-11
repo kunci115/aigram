@@ -28,13 +28,13 @@ class URL:
 
 
 class CURRENCY_FROM_IDR:
-    BTC = 'BTC TO IDR'
-    ETH = 'ETH TO IDR'
+    BTC = ['BTC TO IDR', 'Please convert btc to idr', 'convert btc to idr']
+    ETH = ['ETH TO IDR', 'Please convert eth to idr', 'convert eth to idr']
 
 
 class CURRENCY_FROM_USD:
-    BTC = 'BTC TO USD'
-    ETH = 'ETH TO USD'
+    BTC = ['BTC TO USD', 'Please convert btc to usd', 'convert btc to usd']
+    ETH = ['ETH TO USD', 'please convert eth to usd', 'convert eth to usd']
 
 
 class KeyboardsBot(object):
@@ -49,8 +49,8 @@ class KeyboardsBot(object):
 
 class KeyboardsCurrencyIDRBot(object):
     def __init__(self):
-        self.btn_btc = KeyboardButton(CURRENCY_FROM_IDR.BTC)
-        self.btn_eth = KeyboardButton(CURRENCY_FROM_IDR.ETH)
+        self.btn_btc = KeyboardButton(CURRENCY_FROM_IDR.BTC[0])
+        self.btn_eth = KeyboardButton(CURRENCY_FROM_IDR.ETH[0])
         self.btn = ReplyKeyboardMarkup(
             resize_keyboard=True
         ).row(self.btn_btc, self.btn_eth)
