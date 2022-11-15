@@ -1,7 +1,8 @@
 import json
 import math
 import logging
-
+import os
+from gtts import gTTS
 from requests import Session
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
@@ -54,6 +55,11 @@ async def process_start_command(message: types.Message):
 @dp.message_handler()
 async def echo_message(msg: types.Message):
     if msg.text in ["hi", "hallo", "hello", "halo"]:
+        print(" test s")
+        audio = gTTS(text=MESSAGE.START, lang="en", slow=False)
+        audio.save("example.mp3")
+        # os.system("start example.mp3")
+        await msg.answer_voice(open("example.mp3", "rb"))
         await msg.reply(MESSAGE.START, reply_markup=kb.btn)
     elif msg.text in ["no", "no thanks", "thanks", "bye"]:
         await msg.reply("Alright bye, Thanks")

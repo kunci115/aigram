@@ -1,6 +1,10 @@
-how to :
+Python example with aiogram
 
-1. pip install -r requirements.txt
-2. python main.py
-3. chat bot with username https://t.me/ancodekey_bot
-4. .env will send separately
+how to run:
+
+1. Create .env inside aigram 
+COINMARKETCAP_API_KEY = Your API KEY
+TELEGRAM_BOT_KEY = YOUR API KEY
+2. pip install -r requirements.txt
+3. run main.py
+4. chat to your bot
